@@ -174,7 +174,7 @@ This will display a line similar to Kube-ops-view URL = http://<URL_PREFIX_ELB>.
 
 For scale applications with HPA we will need the metric server installed in our cluster, we already installed it using the EKS blueprints with terraform showing below:
 
-```json
+```terraform
 # Add-ons
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
@@ -239,6 +239,74 @@ You will see HPA scale the pods from 1 up to our configured maximum (10) until t
 You can now stop (Ctrl + C) load test that was running in the other terminal. You will notice that HPA will slowly bring the replica count to min number based on its configuration. You should also get out of load testing application by pressing Ctrl + D.
 
 ## Configure Cluster Autoscaler (CA)
+
+Cluster Autoscaler for AWS provides integration with Auto Scaling groups. It enables users to choose from four different options of deployment:
+
+    One Auto Scaling group
+    Multiple Auto Scaling groups
+    Auto-Discovery
+    Control-plane Node setup
+
+Auto-Discovery is the preferred method to configure Cluster Autoscaler.
+
+Cluster Autoscaler will attempt to determine the CPU, memory, and GPU resources provided by an Auto Scaling Group based on the instance type specified in its Launch Configuration or Launch Template.
+
+### Configure the ASG
+
+You configure the size of your Auto Scaling group by setting the minimum, maximum, and desired capacity. When we created the cluster we set these settings to 2 in the terraform manifest.
+
+```terraform
+managed_node_groups = {
+    mg_5 = {
+      node_group_name = "managed-ondemand"
+      instance_types  = ["m5.large"]
+      desired_size = 2
+      max_size     = 2
+      min_size     = 2
+      subnet_ids      = module.vpc.private_subnets
+    }
+  }
+```
+
+Now, increase the maximum capacity to 4 instances. Open the `terraform/main.tf` file and update the `max_size` from 2 to 4, you will have your manifest like this:
+
+```terraform
+managed_node_groups = {
+    mg_5 = {
+      node_group_name = "managed-ondemand"
+      instance_types  = ["m5.large"]
+      desired_size = 2
+      max_size     = 4
+      min_size     = 2
+      subnet_ids      = module.vpc.private_subnets
+    }
+  }
+```
+
+Let's also enable the `Cluster-Autoscaler` in the add-ons section of our terraform manifest. Open the `terraform/main.tf` and change the `enable_cluster_autoscaler` from `false` to `true`.
+
+```terraform
+module "eks_blueprints_kubernetes_addons" {
+  source = "github.com/aws-ia/terraform-aws-eks-blueprints//modules/kubernetes-addons?ref=v4.0.7"
+
+  eks_cluster_id = module.eks_blueprints.eks_cluster_id
+
+  # EKS Managed Add-ons
+  enable_amazon_eks_vpc_cni    = true
+  enable_amazon_eks_coredns    = true
+  enable_amazon_eks_kube_proxy = true
+
+  # Add-ons
+  enable_aws_load_balancer_controller = true
+  enable_metrics_server               = true
+  enable_cluster_autoscaler           = true
+  enable_aws_cloudwatch_metrics       = false
+
+  tags = local.tags
+
+  depends_on = [module.eks_blueprints.managed_node_groups]
+}
+```
 
 
 
