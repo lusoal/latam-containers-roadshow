@@ -84,7 +84,7 @@ git clone https://github.com/davivcgarcia/latam-containers-roadshow.git
 Initialize a working directory with configuration files
 
 ```bash
-cd terraform/
+cd eks/terraform/
 terraform init
 ```
 
