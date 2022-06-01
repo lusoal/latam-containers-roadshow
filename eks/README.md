@@ -499,6 +499,11 @@ spec:
     - key: karpenter.sh/capacity-type
       operator: In
       values: ["spot"]
+    - key: kubernetes.io/arch
+      operator: In
+      values:
+      - amd64
+      - arm64
   limits:
     resources:
       cpu: 1000
@@ -598,6 +603,95 @@ Now that we understand how Karpenter works, let's undeploy the nginx application
 
 ```bash
 kubectl delete -f ~/environment/karpenter-nginx.yaml
+```
+
+Since the new node does not have pods running on it, Karpenter will remove the node. Watch the list of nodes until the new node is removed:
+
+```bash
+watch kubectl get nodes
+```
+
+## Deploy a ARM based application
+
+When a provisioner does not specify the architecture and also the instance types on which it can create new nodes, by default all instances and all architectures (amd64 and arm64) will be used. This means that a [Graviton](https://aws.amazon.com/pm/ec2-graviton/) instance can be created, and with that, the application that is to be executed may not support the architecture of the instance, which can cause errors at execution time.
+
+It's possible to utilize [well-known label](https://kubernetes.io/docs/reference/labels-annotations-taints/) kubernetes.io/arch in the application manifest with a *node selector*. In that way Karpenter will take in consideration the selector and provision the specific node for that use case.
+
+Let's provision an `arm` application with a `arm64` node selector:
+
+```bash
+cat <<EoF> ~/environment/karpenter-arm64.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-world-arm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-world-arm
+  template:
+    metadata:
+      labels:
+        service: hello-world-arm
+        app: hello-world-arm
+    spec:
+      containers:
+      - image: public.ecr.aws/nginx/nginx:1.21-arm64v8
+        name: hello-world-arm
+        resources:
+          limits:
+            cpu: 500m
+            memory: 512Mi
+          requests:
+            cpu: 500m
+            memory: 512Mi
+      nodeSelector:
+        kubernetes.io/arch: arm64  
+EoF
+
+kubectl apply -f ~/environment/karpenter-arm64.yaml
+```
+
+List all available pods in th default namespace:
+
+```bash
+kubectl get pods
+```
+
+Observe that the pod is with status Pending. The reason is that the cluster does not have any node availble required by the Pod's nodeSelector (kubernetes.io/arch: arm64).
+
+Karpenter is monitoring the cluster and is provisioning a new node. Watch the node creation until the status is `Ready`:
+
+```bash
+watch kubectl get nodes
+```
+
+Once the node is `Ready`, let's get the Node name which the Pod is running:
+
+```bash
+export ARM_NODE=$(kubectl get pods -owide | awk '{print $7}' | grep -vi node)
+```
+
+Now let's check the Node labels, with the labels we are able to see if the node was provisioned in the correct architecture.
+
+```bash
+kubectl get node $ARM_NODE --show-labels
+```
+
+The result will look like the following:
+
+```output
+NAME                          STATUS   ROLES    AGE   VERSION                LABELS
+ip-10-0-11-211.ec2.internal   Ready    <none>   15m   v1.21.12-eks-5308cf7   beta.kubernetes.io/arch=arm64,beta.kubernetes.io/instance-type=t4g.small,beta.kubernetes.io/os=linux,failure-domain.beta.kubernetes.io/region=us-east-1,failure-domain.beta.kubernetes.io/zone=us-east-1b,intent=apps,karpenter.sh/capacity-type=spot,karpenter.sh/provisioner-name=default,kubernetes.io/arch=arm64,kubernetes.io/hostname=ip-10-0-11-211.ec2.internal,kubernetes.io/os=linux,node.kubernetes.io/instance-type=t4g.small,topology.kubernetes.io/region=us-east-1,topology.kubernetes.io/zone=us-east-1b
+```
+
+As you can see this Node has the label `kubernetes.io/arch=arm64`, showing that is a arm node powered by Graviton.
+
+## Undeploy the ARM application
+
+```bash
+kubectl delete -f ~/environment/karpenter-arm64.yaml 
 ```
 
 Since the new node does not have pods running on it, Karpenter will remove the node. Watch the list of nodes until the new node is removed:
