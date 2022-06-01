@@ -571,3 +571,37 @@ EoF
 
 kubectl apply -f ~/environment/karpenter-nginx.yaml
 ```
+
+List all available pods in the default namespace:
+
+```bash
+kubectl get pods
+```
+
+Observe that 2 pods are with status `Pending`. The reason is that the cluster does not have any node availble required by the Pod's resource request.
+
+Karpenter is monitoring the cluster and is provisioning a new node. Watch the node creation until the status is `Ready`:
+
+```bash
+watch kubectl get nodes
+```
+
+When the new node is `Ready`, list the pods to validate that the application is Running:
+
+```bash
+kubectl get pods
+```
+
+## Undeploy the application
+
+Now that we understand how Karpenter works, let's undeploy the nginx application:
+
+```bash
+kubectl delete -f ~/environment/karpenter-nginx.yaml
+```
+
+Since the new node does not have pods running on it, Karpenter will remove the node. Watch the list of nodes until the new node is removed:
+
+```bash
+watch kubectl get nodes
+```
