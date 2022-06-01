@@ -54,6 +54,22 @@ module "eks_blueprints" {
 
   vpc_id             = module.vpc.vpc_id
   private_subnet_ids = module.vpc.private_subnets
+  
+  node_security_group_additional_rules = {
+    ingress_nodes_karpenter_port = {
+      description                   = "Cluster API to Nodegroup for Karpenter"
+      protocol                      = "tcp"
+      from_port                     = 8443
+      to_port                       = 8443
+      type                          = "ingress"
+      source_cluster_security_group = true
+    }
+  }
+
+  # Add karpenter.sh/discovery tag so that we can use this as securityGroupSelector in karpenter provisioner
+  node_security_group_tags = {
+    "karpenter.sh/discovery/${local.name}" = local.name
+  }
 
   managed_node_groups = {
     mg_5 = {
@@ -84,6 +100,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_metrics_server               = true
   enable_cluster_autoscaler           = false
   enable_aws_cloudwatch_metrics       = false
+  enable_karpenter                    = false
 
   tags = local.tags
 
