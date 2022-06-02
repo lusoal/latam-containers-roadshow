@@ -859,3 +859,25 @@ flux bootstrap github \
 
 The above command will generate an SSH key (defaults to RSA 2048 but can be changed with --ssh-key-algorithm), and it will prompt you to add the SSH public key as a deploy key to your repository.
 
+The output is similar to:
+
+```output
+► connecting to github.com
+✔ repository created
+✔ repository cloned
+✚ generating manifests
+✔ components manifests pushed
+► installing components in flux-system namespace
+deployment "source-controller" successfully rolled out
+deployment "kustomize-controller" successfully rolled out
+deployment "helm-controller" successfully rolled out
+deployment "notification-controller" successfully rolled out
+✔ install completed
+► configuring deploy key
+✔ deploy key configured
+► generating sync manifests
+✔ sync manifests pushed
+► applying sync manifests
+◎ waiting for cluster sync
+✔ bootstrap finished
+```
