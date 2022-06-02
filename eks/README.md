@@ -881,3 +881,30 @@ deployment "notification-controller" successfully rolled out
 ◎ waiting for cluster sync
 ✔ bootstrap finished
 ```
+
+6. To check if flux did the reconciliation successfully execute the below command:
+
+```bash
+flux get all
+```
+
+Te output will look like the follow:
+
+```output
+NAME                            REVISION        SUSPENDED       READY   MESSAGE                                                                      
+gitrepository/flux-system       main/2b3ef06    False           True    stored artifact for revision 'main/2b3ef069e9730074e4c48584228d6bfd1390b591'
+
+NAME                            REVISION                                                                SUSPENDED       READY   MESSAGE                                                                                         
+helmrepository/sample-chart     2df73a274124471769e659912cf88d9faae18f6307193bff262bc3eab75f52c7        False           True    stored artifact for revision '2df73a274124471769e659912cf88d9faae18f6307193bff262bc3eab75f52c7'
+
+NAME                            REVISION        SUSPENDED       READY   MESSAGE                                         
+helmchart/flux-system-app1      0.1.0           False           True    pulled 'hello-world' chart with version '0.1.0'
+
+NAME                    REVISION        SUSPENDED       READY   MESSAGE                          
+helmrelease/app1        0.1.0           False           True    Release reconciliation succeeded
+
+NAME                            REVISION        SUSPENDED       READY   MESSAGE                                                                                                    
+kustomization/apps              main/2b3ef06    False           True    Applied revision: main/2b3ef06                                                                            
+kustomization/flux-system       main/2b3ef06    False           True    Applied revision: main/2b3ef06                                                                            
+kustomization/infrastructure                    False           False   kustomization path not found: stat /tmp/kustomization-1526705579/infrastructure: no such file or directory
+```
