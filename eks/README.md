@@ -847,13 +847,13 @@ The output is similar to:
 5. Bootstrap, using the `flux bootstrap` command you can install Flux on a Kubernetes cluster and configure it to manage itself from a Git repository.
 
 ```bash
-flux bootstrap github \ 
-  --owner=${GITHUB_USER} \ 
-  --repository=latam-containers-roadshow \ 
-  --path=./eks/fluxcd-examples/clusters/my-cluster/ \ 
-  --read-write-key \ 
-  --branch=main \ 
-  --namespace=flux-system \ 
+flux bootstrap github \
+  --owner=${GITHUB_USER} \
+  --repository=latam-containers-roadshow \
+  --path=./eks/fluxcd-examples/clusters/my-cluster/ \
+  --read-write-key \
+  --branch=main \
+  --namespace=flux-system \
   --components-extra=image-reflector-controller,image-automation-controller
 ```
 
