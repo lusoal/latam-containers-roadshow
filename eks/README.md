@@ -829,3 +829,14 @@ export GITHUB_USER=<your-username>
 ```
 curl -s https://fluxcd.io/install.sh | sudo bash
 ```
+
+4. Bootstrap, using the `flux bootstrap` command you can install Flux on a Kubernetes cluster and configure it to manage itself from a Git repository.
+
+```bash
+flux bootstrap github --owner=${GITHUB_USER} --repository=
+latam-containers-roadshow
+ --path=./eks/fluxcd-examples/clusters/my-cluster/ --read-write-key --branch=main --namespace=flux-system --components-extra=image-reflector-controller,image-automation-controller
+```
+
+The above command will generate an SSH key (defaults to RSA 2048 but can be changed with --ssh-key-algorithm), and it will prompt you to add the SSH public key as a deploy key to your repository.
+
