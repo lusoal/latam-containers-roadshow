@@ -908,6 +908,57 @@ kustomization/apps              main/2b3ef06    False           True    Applied 
 kustomization/flux-system       main/2b3ef06    False           True    Applied revision: main/2b3ef06                                                                            
 kustomization/infrastructure                    False           False   kustomization path not found: stat /tmp/kustomization-1526705579/infrastructure: no such file or directory
 ```
+## Flux repository structure
+
+Flux uses [Kustomize Controller](https://fluxcd.io/docs/components/kustomize/) to reference manifests in the repository.
+
+A Kustomization object defines the source of Kubernetes manifests by referencing an object managed by [source-controller](https://github.com/fluxcd/source-controller), the path to the Kustomization file within that source, and the interval at which the kustomize build output is applied on the cluster.
+
+```output
+├── apps
+│   ├── app1.yaml
+│   ├── kustomization.yaml
+│   ├── sample-app.yaml
+│   └── sources
+│       ├── kustomization.yaml
+│       └── sample-chart.yaml
+├── clusters
+│   └── my-cluster
+│       ├── apps.yaml
+│       └── infrastructure.yaml
+└── infrastructure
+    ├── add-ons
+    │   ├── cluster-autoscaler.yaml
+    │   ├── kustomization.yaml
+    │   ├── load-balancer-controller.yaml
+    │   └── metric-server.yaml
+    ├── kustomization.yaml
+    └── sources
+        ├── bitnami.yaml
+        ├── cluster-autoscaler.yaml
+        ├── eks-charts.yaml
+        └── kustomization.yaml
+```
+
+**apps:** The folder where we are going to create our application manifests to flux deploy.
+
+**infraestructure:** Folder where we are going to place our add-ons and infraestructure components manifests.
+
+**clusters/my-cluster:** Folder where flux place the bootstrap files pointing to our `Kustomizations manifests`.
+
+### Kustomization example manifest
+
+Let's check one Kustomization manifest to see what it's look like, we are going to open the `apps/kustomization.yaml`
+
+```yaml
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - app1.yaml
+  - sources
+```
+
+As you can see above, the Kustomization object is reponsible to reference all the other manifests that we have in the repository, in that way Flux knows what manifest to apply in our cluster.
 
 ## Changing an existing application manifest
 
