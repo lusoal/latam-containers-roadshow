@@ -30,7 +30,7 @@ Take the defaults and click on Open AWS Console. This will open AWS Console in a
 
 Once you have completed the step above, you can head straight to:
 
-[EKS](./eks/)
-[ECS](_)
+- [EKS](./eks/)
+- [ECS](_)
 
 Workshops! 
