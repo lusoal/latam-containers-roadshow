@@ -40,8 +40,29 @@ In your account you will see a Cloud9 instance already deployed with all permiss
 <img src="static/cloud9-01.png">
 </p>
 
+2. Click on `Open IDE` in your Cloud9 instance:
 
-Once you have completed the step above, you can head straight to:
+<p align="center"> 
+<img src="static/cloud9-02.png">
+</p>
+
+3. When it comes up, customize the environment by:
+
+Closing the Welcome tab
+
+<p align="center"> 
+<img src="static/cloud9-03.png">
+</p>
+
+4. Opening a new terminal tab in the main work area:
+
+<p align="center"> 
+<img src="static/cloud9-04.png">
+</p>
+
+# Select the workshop
+
+Once you have completed above steps, you can head straight to:
 
 - [EKS](./eks/)
 - [ECS](_)
