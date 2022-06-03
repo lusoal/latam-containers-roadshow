@@ -23,10 +23,23 @@ Enter the provided hash in the text box. The button on the bottom right corner c
 Click on AWS Console on dashboard.
 
 <p align="center"> 
-<img src="static/event-engine-aws-console.png">
+<img src="static/ee-console-login.png">
 </p>
 
 Take the defaults and click on Open AWS Console. This will open AWS Console in a new browser tab.
+
+## Opening AWS Cloud9
+
+AWS Cloud9 is a cloud-based integrated development environment (IDE) that lets you write, run, and debug your code with just a browser. It includes a code editor, debugger, and terminal.
+
+In your account you will see a Cloud9 instance already deployed with all permissions that you need to complete de workshop.
+
+1. Open the Cloud9 Instance, go to the search box and search for `Cloud9`, click on it:
+
+<p align="center"> 
+<img src="static/cloud9-01.png">
+</p>
+
 
 Once you have completed the step above, you can head straight to:
 
