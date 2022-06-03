@@ -74,6 +74,11 @@ helm repo add stable https://charts.helm.sh/stable
 aws cloud9 update-environment  --environment-id $C9_PID --managed-credentials-action DISABLE
 rm -vf ${HOME}/.aws/credentials
 ```
+### Create Spot Service Linked Role
+
+```bash
+aws iam create-service-linked-role --aws-service-name spot.amazonaws.com
+```
 
 ### Export useful variables
 
@@ -81,6 +86,7 @@ rm -vf ${HOME}/.aws/credentials
 export ACCOUNT_ID=$(aws sts get-caller-identity --output text --query Account)
 export AWS_REGION=$(curl -s 169.254.169.254/latest/dynamic/instance-identity/document | jq -r '.region')
 export AZS=($(aws ec2 describe-availability-zones --query 'AvailabilityZones[].ZoneName' --output text --region $AWS_REGION))
+export CLUSTER_NAME='latam-containers-roadshow'
 ```
 
 Put it on bash profile
@@ -89,6 +95,7 @@ Put it on bash profile
 echo "export ACCOUNT_ID=${ACCOUNT_ID}" | tee -a ~/.bash_profile
 echo "export AWS_REGION=${AWS_REGION}" | tee -a ~/.bash_profile
 echo "export AZS=(${AZS[@]})" | tee -a ~/.bash_profile
+echo "export CLUSTER_NAME=${CLUSTER_NAME}" | tee -a ~/.bash_profile
 aws configure set default.region ${AWS_REGION}
 aws configure get default.region
 ```
@@ -109,7 +116,7 @@ git clone https://github.com/davivcgarcia/latam-containers-roadshow.git
 Initialize a working directory with configuration files
 
 ```bash
-cd eks/terraform/
+cd latam-containers-roadshow/eks/terraform/
 terraform init
 ```
 
@@ -138,7 +145,7 @@ EKS Cluster details can be extracted from terraform output or from AWS Console t
 `~/.kube/config` file gets updated with cluster details and certificate from the below command
 
 ```bash
-aws eks --region us-east-1 update-kubeconfig --name latam-containers-roadshow
+aws eks --region us-east-1 update-kubeconfig --name ${CLUSTER_NAME}
 ```
 
 ### Step 6: List all the worker nodes by running the command below
@@ -293,7 +300,7 @@ managed_node_groups = {
   }
 ```
 
-Now, increase the maximum capacity to 4 instances. Open the `terraform/main.tf` file and update the `max_size` from 2 to 4, you will have your manifest like this:
+Now, increase the maximum capacity to 4 instances. Open the `latam-containers-roadshow/eks/terraform/main.tf` file and update the `max_size` from 2 to 4, you will have your manifest like this:
 
 ```terraform
 managed_node_groups = {
@@ -308,7 +315,7 @@ managed_node_groups = {
   }
 ```
 
-Let's also enable the `Cluster-Autoscaler` in the add-ons section of our terraform manifest. Open the `terraform/main.tf` and change the `enable_cluster_autoscaler` from `false` to `true`.
+Let's also enable the `Cluster-Autoscaler` in the add-ons section of our terraform manifest. Open the `latam-containers-roadshow/eks/terraform/main.tf` and change the `enable_cluster_autoscaler` from `false` to `true`.
 
 ```terraform
 module "eks_blueprints_kubernetes_addons" {
@@ -340,7 +347,7 @@ module "eks_blueprints_kubernetes_addons" {
 Verify the resources created by this execution
 
 ```bash
-cd eks/terraform/
+cd latam-containers-roadshow/eks/terraform/
 terraform plan
 ```
 
@@ -442,7 +449,7 @@ helm uninstall kube-ops-view
 
 [Karpenter](https://karpenter.sh/) is an open-source autoscaling project built for Kubernetes. Karpenter is designed to provide the right compute resources to match your application’s needs in seconds, instead of minutes by observing the aggregate resource requests of unschedulable pods and makes decisions to launch and terminate nodes to minimize scheduling latencies.
 
-Let's enable Karpenter and disable Cluster Autoscaler in our EKS cluster using terraform. Open the `eks/terraform/main.tf` and set `enable_cluster_autoscale` from `true` to `false`, also set the `enable_karpenter` from `false` to `true`:
+Let's enable Karpenter and disable Cluster Autoscaler in our EKS cluster using terraform. Open the `latam-containers-roadshow/eks/terraform/main.tf` and set `enable_cluster_autoscale` from `true` to `false`, also set the `enable_karpenter` from `false` to `true`:
 
 ```terraform
 module "eks_blueprints_kubernetes_addons" {
@@ -489,7 +496,7 @@ managed_node_groups = {
 Verify the resources created by this execution
 
 ```bash
-cd eks/terraform/
+cd latam-containers-roadshow/eks/terraform/
 terraform plan
 ```
 
@@ -512,8 +519,6 @@ One of the main objectives of Karpenter is to simplify the management of capacit
 Let’s deploy the following provisioner:
 
 ```bash
-export CLUSTER_NAME='latam-containers-roadshow'
-
 cat <<EOF> ~/environment/provisioner.yaml
 apiVersion: karpenter.sh/v1alpha5
 kind: Provisioner
@@ -733,7 +738,7 @@ In this module we will learn and leverage the new CloudWatch Container Insights 
 
 You can use CloudWatch Container Insights to collect, aggregate, and summarize metrics and logs from your containerized applications and microservices. Container Insights is available for Amazon Elastic Container Service, Amazon Elastic Kubernetes Service, and Kubernetes platforms on Amazon EC2. The metrics include utilization for resources such as CPU, memory, disk, and network. Container Insights also provides diagnostic information, such as container restart failures, to help you isolate issues and resolve them quickly.
 
-Let's first enable CloudWatch and Fluent-bit add-ons in `eks/terraform/main.tf`, set the flag `enable_aws_cloudwatch_metrics` from `false` to `true`, and the flag `enable_aws_for_fluentbit` from `false` to `true`
+Let's first enable CloudWatch and Fluent-bit add-ons in `latam-containers-roadshow/eks/terraform/main.tf`, set the flag `enable_aws_cloudwatch_metrics` from `false` to `true`, the flag `enable_aws_for_fluentbit` from `false` to `true` and the flag `enable_karpenter` from `true` to `false`:
 
 
 ```terraform
@@ -751,7 +756,7 @@ module "eks_blueprints_kubernetes_addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = false 
-  enable_karpenter                    = true 
+  enable_karpenter                    = false # Disable Karpenter 
   enable_aws_cloudwatch_metrics       = true # Enable CloudWatch metrics
   enable_aws_for_fluentbit            = true # Enable fluent-bit
   
@@ -766,7 +771,7 @@ module "eks_blueprints_kubernetes_addons" {
 Verify the resources created by this execution
 
 ```bash
-cd eks/terraform/
+cd latam-containers-roadshow/eks/terraform/
 terraform plan
 ```
 
@@ -785,8 +790,6 @@ Doing that will create the `amazon-cloudwatch` namespace in our cluster with the
 To verify that data is being collected in CloudWatch, launch the CloudWatch Containers UI in your browser using the link generated by the command below:
 
 ```bash
-export AWS_REGION='us-east-1'
-
 echo "
 Use the URL below to access Cloudwatch Container Insights in $AWS_REGION:
 
@@ -845,6 +848,9 @@ In this module of the workshop we are going to setup [Flux CD](https://fluxcd.io
 ```
 export GITHUB_TOKEN=<your-token>
 export GITHUB_USER=<your-username>
+
+echo "export GITHUB_TOKEN=${GITHUB_TOKEN}" | tee -a ~/.bash_profile
+echo "export GITHUB_USER=${GITHUB_USER}" | tee -a ~/.bash_profile
 ```
 
 > **_NOTE:_** To create you GitHub personal access token, follow the instructions of [this link](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).
@@ -1208,4 +1214,9 @@ Then open it on the browser, if everything went fine, you will be able to see th
 
 # Cleaning up resources
 
+## Run Terraform Destroy
 
+```bash
+cd latam-containers-roadshow/eks/terraform/
+terraform destroy --auto-approve
+```
