@@ -31,10 +31,6 @@ Parameters:
     Type: String
     Description: The Arn of the Cloud9 Owner to be set if 3rdParty deployment.
     Default: ""
-  C9InstanceVolumeSize: 
-    Type: Number
-    Description: The Size in GB of the Cloud9 Instance Volume. 
-    Default: 30
 
 Metadata:
   AWS::CloudFormation::Interface:
@@ -46,7 +42,6 @@ Metadata:
       - C9InstanceType
       - C9EnvType
       - OwnerArn
-      - C9InstanceVolumeSize
 
 Conditions: 
   Create3rdPartyResources: !Equals [ !Ref C9EnvType, 3rdParty ]
@@ -130,8 +125,13 @@ Resources:
           - Effect: Allow
             Action:
             - ec2:DescribeInstances
+            - ec2:DescribeVolumes
             - ec2:DescribeIamInstanceProfileAssociations
-            Resource: "*"         
+            Resource: "*"  
+          - Effect: Allow
+            Action:
+            - ec2:ModifyVolume
+            Resource: !Sub "arn:aws:ec2:${AWS::Region}:${AWS::AccountId}:volume/*"
           - Effect: Allow
             Action:
             - iam:ListInstanceProfiles
@@ -183,7 +183,6 @@ Resources:
       Timeout: 600
       Code:
         ZipFile: |
-          from __future__ import print_function
           import boto3
           import json
           import os
@@ -224,18 +223,34 @@ Resources:
                           instance_state = ec2.describe_instances(InstanceIds=[instance['InstanceId']])
                           logger.info('instance_state: {}'.format(instance_state))
           
-                      # attach instance profile
+                      # Attach instance profile
                       response = ec2.associate_iam_instance_profile(IamInstanceProfile=iam_instance_profile, InstanceId=instance['InstanceId'])
                       logger.info('response - associate_iam_instance_profile: {}'.format(response))
-                      #r_ec2 = boto3.resource('ec2')
-  
+
+                      # Identify instance root volume and resize it to 40GB
+                      volume_info = ec2.describe_volumes(
+                          Filters=[
+                              {
+                                  'Name': 'attachment.instance-id',
+                                  'Values': [
+                                      instance['InstanceId']
+                                  ]
+                              }
+                          ]
+                      )
+                      volume_id = volume_info['Volumes'][0]['VolumeId']
+                      resize = ec2.modify_volume(    
+                              VolumeId=volume_id,    
+                              Size=40
+                      )
+                      logger.info('resize: {}'.format(resize))
+
                       responseData = {'Success': 'Started bootstrapping for instance: '+instance['InstanceId']}
                       cfnresponse.send(event, context, cfnresponse.SUCCESS, responseData, 'CustomResourcePhysicalID')
                       
                   except Exception as e:
                       logger.error(e, exc_info=True)
-                      # responseData = {'Error': traceback.format_exc(e)}
-                      responseData = {'Error':'There was a problem associating IAM profile to the Cloud9 Instance'}
+                      responseData = {'Error':'There was a problem modifying the Cloud9 Instance'}
                       cfnresponse.send(event, context, cfnresponse.FAILED, responseData, 'CustomResourcePhysicalID')
 
               else:
@@ -328,6 +343,7 @@ Resources:
             - sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
             - sudo yum -y install terraform
             - echo "Bootstrap completed with return code $?"
+            - sudo shutdown -r +1
 
   C9BootstrapAssociation: 
     Type: AWS::SSM::Association
