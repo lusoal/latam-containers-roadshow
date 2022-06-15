@@ -1,6 +1,8 @@
 # LATAM Containers Roadshow - ECS Workshop
 
-Neste workshop, exploraremos como o [Amazon Elastic Container Service (ECS)] (https://aws.amazon.com/ecs/) pode acelerar drasticamente a adoção de contêineres na nuvem, aproveitando integrações profundas com o ecossistema da AWS e fornecendo um modelo operacional simplificado. Usaremos o [AWS Copilot] (https://github.com/aws/copilot-cli), para habilitar times de desenvolvimento a criar, lançar e operar aplicativos conteinerizados em produção seguindo boas práticas.
+Neste workshop, exploraremos como o [Amazon Elastic Container Service (ECS)](https://aws.amazon.com/ecs/) pode acelerar drasticamente a adoção de contêineres na nuvem, aproveitando integrações profundas com o ecossistema da AWS e fornecendo um modelo operacional simplificado.
+
+Usaremos o [AWS Copilot](https://github.com/aws/copilot-cli), para habilitar times de desenvolvimento a criar, lançar e operar aplicativos conteinerizados em produção seguindo boas práticas.
 
 ## Capítulos
 

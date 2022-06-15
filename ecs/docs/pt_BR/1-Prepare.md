@@ -12,16 +12,19 @@ Entretanto, precisamos realizar uma pequena modificação que não foi possível
 
 ![Imagem animada onde usamos a barra de busca para acessar diretamente a console do serviço AWS Cloud9](../static/1.1-access_c9_env.gif "1.1 - Acessando o ambiente do AWS Cloud9")
 
-2. Dentro do ambiente AWS Cloud9, acesse a página de preferências (ícone de engrenagem no canto superior direito). Em seguida, vá para `AWS Settings` e desmarque a opção `AWS managed temporary credentials`  na seção `Credentials`.
+2. Vamos garantir que estamos usando a funcionalidade de credenciais temporárias do AWS Cloud9 para não precisar gerenciar credenciais manualmente, dado que o AWS Copilot não utilizar EC2 Instance Profiles:
 
-![Imagem animada mostrando como desabilitar credenciais temporárias no ambiente AWS Cloud9](../static/1.2-disable_temp_creds.gif "1.2 - Desativar credencial temporária do AWS Cloud9")
+![Imagem animada onde validamos se a funcionalidade de credenciais temporárias estão habilitadas no AWS Cloud9](../static/1.2-enable_c9_temp_creds.gif "1.2 - Validando de Credenciais Temporárias estão Ligadas")
 
-3. Depois vamos validar se de fato estamos usando a IAM Role associada ao perfil da instância do Amazon EC2 que representa nosso ambiente AWS Cloud9. Para isso, usamos o terminal integrado para executar o seguinte comando:
+3. Dentro do ambiente AWS Cloud9, vamos criar um arquivo de configuração para o AWS CLI v2:
 
 ```bash
-aws sts get-caller-identity
+cat <<EOF > ~/.aws/config
+[default]
+region=$(curl -s http://169.254.169.254/latest/dynamic/instance-identity/document | jq .region -r)
+output=json
+EOF
 ```
-![Captura de tela mostrando a identidade do AWS IAM disponível para a AWS CLI](../static/1.3-validate_identitity.png "1.3 - Verificar a identidade do AWS IAM usada pela CLI")
 
 Isso é tudo! Vamos começar a criar nosso ambiente do Amazon ECS com a CLI do AWS Copilot.
 
