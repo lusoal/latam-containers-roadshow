@@ -64,7 +64,7 @@ Closing the Welcome tab
 
 Once you have completed above steps, you can head straight to:
 
-- [EKS](./eks/)
-- [ECS](_)
+- [Amazon Elastic Container Service (ECS)](./ecs/)
+- [Amazon Elastic Kubernetes Service (EKS)](./eks/)
 
-Workshops! 
+Enjoy the workshops!
