@@ -380,7 +380,20 @@ Resources:
         - Key: SSMBootstrap
           Value: Active
         - Key: Environment
-          Value: !Sub ${EnvironmentNameC9} 
+          Value: !Sub ${EnvironmentNameC9}
+
+  WorkshopUser:
+    Type: 'AWS::IAM::User'
+    Properties:
+      UserName: workshop-user
+      ManagedPolicyArns:
+      - arn:aws:iam::aws:policy/AdministratorAccess
+
+  WorkshopUserCredentials:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      Status: Active
+      UserName: !Ref WorkshopUser
 
 Outputs:
   Cloud9IDE:
@@ -395,3 +408,7 @@ Outputs:
         - Ref: AWS::Region
     Export:
       Name: Cloud9IDE
+  WorkshopUserKeyId:
+    Value: !Ref WorkshopUserCredentials
+  WorkshopUserKeySecret:
+    Value: !GetAtt WorkshopUserCredentials.SecretAccessKey
