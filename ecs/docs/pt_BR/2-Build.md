@@ -22,23 +22,23 @@ cd latam-containers-roadshow/ecs/src/
 copilot help
 ```
 
-![Captura de tela com as opções de comandos disponíveis do AWS Copilot](../static/2.1-copilot_options.png "2.1 - Opções de comandos no AWS Copilot")
+![Captura de tela com as opções de comandos disponíveis do AWS Copilot](../static/2.1-copilot_options.png)
 
-3. Vamos seguir a recomendação do comando anterior, e inicializar nossa aplicação com o AWS Copilot. Para isso, vamos executar o comando abaixo:
+3. Vamos seguir e inicializar nossa `Application` do AWS Copilot chamada `todo`. Essa construção representa uma descrição alto nível da aplicação que estamos tentando construir, e é uma coleção de `Services` e `Environments` (que ainda vamos ver o que são). Para isso, vamos executar o comando abaixo:
 
 ```bash
 copilot app init todo
 ```
 
-![Captura de tela com o resultado do comando 'app init'](../static/2.2-copilot_app_init.png "2.2 - Saída do comando 'copilot app init'")
+![Captura de tela com o resultado do comando 'app init'](../static/2.2-copilot_app_init.png)
 
-4. Esse comando criou recursos como IAM Role e parâmetros no AWS System Manager Parameter Store através do AWS CloudFormation que permitem a ferramenta gerenciar outros componentes como `Services` e `Jobs`. Podemos listar as aplicações AWS Copilot com:
+4. Esse comando criou recursos como IAM Role e parâmetros no AWS System Manager Parameter Store através do AWS CloudFormation, que permitem a ferramenta gerenciar outros componentes como `Services` e `Jobs`. Podemos listar as aplicações AWS Copilot com:
 
 ```bash
 copilot app ls
 ```
 
-![Captura de tela com o resultado do comando 'app ls'](../static/2.3-copilot_app_ls.png "2.3 - Saída do comando 'copilot app ls'")
+![Captura de tela com o resultado do comando 'app ls'](../static/2.3-copilot_app_ls.png)
 
 5. Além disso, ele criou uma estrutura de diretórios a partir de onde o comando de inicialização foi executado, onde ele armazena os arquivos de configuração dos componentes relacionados ao AWS Copilot. Esse diretório ainda está praticamente vazio, mas ele vai ficar populado em breve!
 
@@ -46,26 +46,40 @@ copilot app ls
 tree -a .
 ```
 
-![Captura de tela com o resultado do comando 'tree -a'](../static/2.4-copilot_dir.png "2.4 - Saída do comando 'tree -a'")
+![Captura de tela com o resultado do comando 'tree -a'](../static/2.4-copilot_dir.png)
 
-6. Uma vez que a nossa `Application` foi criada, vamos criar os `Environments` no AWS Copilot. Estes são de fato as infraestruturas que suportam as nossas `Applications` e, que no nosso caso, será baseada em Amazon Elastic Container Service (ECS) e AWS Fargate. Vamos primeiro criar o nosso ambiente de desenvolvimento, e siga com as opções padrão para as perguntas:
+6. Uma vez que a nossa `Application` foi criada, vamos criar os `Environments` no AWS Copilot. Estes são de fato as infraestruturas que suportam as nossas `Applications` e, que no nosso caso, será baseada em Amazon Elastic Container Service (ECS) e AWS Fargate. Estamos usando a opção `--container-insights` para sinalizar que queremos a ativar a integração com Amazon CloudWatch, o nosso serviço de observabilidade integrada de logs e métricas. Vamos primeiro criar o nosso ambiente de desenvolvimento:
 
 ```bash
 copilot env init --app todo --name development --container-insights
 ```
 
-![Captura de tela com o resultado do comando 'copilot env init'](../static/2.5-copilot_env_init.png "2.5 - Saída do comando 'copilot env init'")
+Use as seguintes respostas:
+- Which credentials would you like to use to create development? **[profile default]**
+- Would you like to use the default configuration for a new environment? **Yes, use default.**
 
-7. Perceba que o AWS Copilot uma série de recursos, dentre eles uma Virtual Private Cloud (VPC), IAM Roles e o nosso cluster de Amazon ECS. O AWS Copilot usa o AWS Fargate como motor de execução dos containers, trazendo uma abordagem serverless (não há instâncias de Amazon EC2 a serem gerenciadas!). Toda essa configuração de recursos se dá através do Amazon CloudFormation.
+![Captura de tela com o resultado do comando 'copilot env init'](../static/2.5-copilot_dev_env_init.png)
 
-![Imagem animada com as saídas do AWS CloudFormation](../static/2.6-stacks_cloudformation.gif "2.6 - Captura de tela ")
+7. Perceba que o AWS Copilot criou uma série de recursos, dentre eles uma Virtual Private Cloud (VPC), IAM Roles e o nosso cluster de Amazon ECS. O AWS Copilot usa o AWS Fargate como motor de execução serverless para os nossos containers (não há instâncias de Amazon EC2 a serem gerenciadas). Toda essa configuração de recursos se dá através do Amazon CloudFormation.
 
-8. Vamos repetir o processo para criar nosso ambiente produtivo. Poderíamos estar usando contas AWS diferentes, mas por conta da limitação do laboratórios vamos ter ambos ambientes na mesma conta mas em Virtual Private Clouds (VPCs) diferentes. Dessa vez vamos usar a opção `--default-config` para ele não perguntar nada sobre a infraestrutura e seguir com o padrão.
+![Imagem animada com as saídas do AWS CloudFormation](../static/2.6-stacks_cloudformation.gif)
+
+8. Vamos repetir o processo para criar nosso ambiente produtivo. Poderíamos estar usando contas AWS diferentes, mas por conta da limitação do laboratórios vamos ter ambos ambientes na mesma conta mas em Virtual Private Clouds (VPCs) diferentes. Dessa vez vamos usar a opção `--default-config` para ele seguir com a opçào de infraestrutura padrão, e a opção `--prod` para sinalizar que esse será um ambiente de produção.
 
 ```bash
-copilot env init --app todo --name production --container-insights --default-config
+copilot env init --app todo --name production --container-insights --default-config --prod
 ```
 
-...
+![Captura de tela com o resultado do segundo comando 'copilot env init'](../static/2.7-copilot_prod_env_init.png)
+
+9. Uma vez que criamos os nossos ambientes de desenvolvimento e produção, vamos olhar como ficou a definição até o momento da nossa `Application`. Na saída do comando vemos a informação alto nível da aplicação, e quais são os ambientes envolvidos. Perceba que ele deixa claro qual o AWS Account ID e AWS Region, porque ele pode ligar com ambientes em regiões e contas diferentes!
+
+```bash
+copilot app show -n todo
+```
+
+![Captura de tela com o resultado do comando 'copilot app show'](../static/2.8-copilot_app_show.png)
+
+Está tudo pronto pra implantarmos os componentes da nossa aplicação `todo`!
 
 [**Próximo >**](./3-Deploy.md)
