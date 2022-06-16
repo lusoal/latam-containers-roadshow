@@ -1,7 +1,7 @@
-# LATAM Containers Roadshow - ECS Workshop
+# LATAM Containers Roadshow - Workshop de Amazon ECS
 
-[**< Back**](./4-Explore.md)
+[**< Voltar**](./4-Explore.md)
 
-## Chapter 5 - Automate the Pipeline
+## Chapter 5 - Automatizando a Esteira
 
-[**Done >**](./README.md)
+[**Próximo >**](./README.md)

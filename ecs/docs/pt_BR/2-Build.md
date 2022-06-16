@@ -6,9 +6,9 @@
 
 Agora que temos tudo o que precisamos em nosso ambiente de trabalho, neste capítulo vamos construir a infraestrutura que hospedará nossa aplicação em containers. Este workshop explorará como aproveitar o Amazon Elastic Compute Service (ECS) para operar contêineres em escala, aproveitando o vasto ecossistema de serviços AWS, sem comprometer a simplicidade operacional do ambiente.
 
-Existem várias maneiras de provisionar infraestrutura na AWS, como usar o AWS CloudFormation, o AWS Cloud Development Kit (CDK) ou o Hashicorp Terraform. Nesse workshop vamos usar o AWS Copilot, que simplifica a criação e operação de aplicações containerizadas na AWS, incorporando as boas práticas para desenvolvimento de arquiteturas nativas de nuvem.
+Existem várias maneiras de provisionar infraestrutura na AWS, como usar o AWS CloudFormation, o AWS Cloud Development Kit (CDK) ou o Hashicorp Terraform. Nesse workshop vamos usar o AWS Copilot, que simplifica a criação e operação de aplicações conteinerizadas na AWS, incorporando as boas práticas para desenvolvimento de arquiteturas nativas de nuvem.
 
-1. Vamos inicialmente clonar o respositório base do workshop para reaproveitar alguns dos artefatos e usar como espaço para inicialização do AWS Copilot.
+1. Vamos inicialmente clonar o repositório base do workshop para reaproveitar alguns dos artefatos e usar como espaço para inicialização do AWS Copilot.
 
 ```bash
 cd ~/environment/
@@ -16,7 +16,7 @@ git clone https://github.com/davivcgarcia/latam-containers-roadshow.git
 cd latam-containers-roadshow/ecs/src/
 ```
 
-2. A AWS Copilot é uma ferramenta de linha de comando, e já se encontra disponível no nosso ambiente de trabalho do AWS Cloud9. Vamos explorar quais são as opções disponíveis. Você pode usar desse comando como subcomandos para explorar o que cada uma das opções aceita de parâmetros.
+2. A AWS Copilot é uma ferramenta de linha de comando, e já se encontra disponível no nosso ambiente de trabalho do AWS Cloud9. Vamos explorar quais são as opções disponíveis. Você pode usar desse comando com outros para explorar as opções de parâmetros.
 
 ```bash
 copilot help
@@ -40,7 +40,7 @@ copilot app ls
 
 ![Captura de tela com o resultado do comando 'app ls'](../static/2.3-copilot_app_ls.png)
 
-5. Além disso, ele criou uma estrutura de diretórios a partir de onde o comando de inicialização foi executado, onde ele armazena os arquivos de configuração dos componentes relacionados ao AWS Copilot. Esse diretório ainda está praticamente vazio, mas ele vai ficar populado em breve!
+5. Além disso, ele criou uma estrutura de diretórios a partir de onde o comando de inicialização foi executado, onde ele armazena os arquivos de configuração dos componentes relacionados ao AWS Copilot. Esse diretório ainda está praticamente vazio, mas ele vai ficar mais cheio em breve!
 
 ```bash
 tree -a .
@@ -64,7 +64,7 @@ Use as seguintes respostas:
 
 ![Imagem animada com as saídas do AWS CloudFormation](../static/2.6-stacks_cloudformation.gif)
 
-8. Vamos repetir o processo para criar nosso ambiente produtivo. Poderíamos estar usando contas AWS diferentes, mas por conta da limitação do laboratórios vamos ter ambos ambientes na mesma conta mas em Virtual Private Clouds (VPCs) diferentes. Dessa vez vamos usar a opção `--default-config` para ele seguir com a opçào de infraestrutura padrão, e a opção `--prod` para sinalizar que esse será um ambiente de produção.
+8. Vamos repetir o processo para criar nosso ambiente produtivo. Poderíamos estar usando contas AWS diferentes, mas por conta da limitação dos laboratórios vamos ter ambos ambientes na mesma conta, mas em Virtual Private Clouds (VPCs) diferentes. Dessa vez vamos usar a opção `--default-config` para ele seguir com a opçào de infraestrutura padrão, e a opção `--prod` para sinalizar que esse será um ambiente de produção.
 
 ```bash
 copilot env init --app todo --name production --container-insights --default-config --prod

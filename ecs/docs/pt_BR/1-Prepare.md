@@ -1,6 +1,6 @@
 # LATAM Containers Roadshow - Workshop de Amazon ECS
 
-[**< Voltar**](./README_ptBR.md)
+[**< Voltar**](./README.md)
 
 ## Capítulo 1 - Preparar o Ambiente de Trabalho
 
@@ -8,7 +8,7 @@ Antes da gente começar a meter a mão na massa e explorar o Amazon Elastic Cont
 
 Entretanto, precisamos realizar uma pequena modificação que não foi possível automatizar:
 
-1. Seguindo os passos descritos inicialmente aqui no repositório, vamos acessar a console do seviço AWS Cloud9 e abrir o nosso ambiente chamado `latamcontainersroadshow`:
+1. Seguindo os passos descritos inicialmente aqui no repositório, vamos acessar a console do serviço AWS Cloud9 e abrir o nosso ambiente chamado `latamcontainersroadshow`:
 
 ![Imagem animada onde usamos a barra de busca para acessar diretamente a console do serviço AWS Cloud9](../static/1.1-access_c9_env.gif "1.1 - Acessando o ambiente do AWS Cloud9")
 
@@ -16,7 +16,7 @@ Entretanto, precisamos realizar uma pequena modificação que não foi possível
 
 ![Imagem animada onde validamos se a funcionalidade de credenciais temporárias está desabilitada no AWS Cloud9](../static/1.2-disable_c9_temp_creds.gif "1.2 - Validando de Credenciais Temporárias estão desligadas")
 
-3. Dentro do ambiente AWS Cloud9, usando o terminal embarcado, vamos configurar o AWS CLI v2 usando o IAM User `worksho-user` e a credential de acesso criados para o workshop. E para isso, vamos usar do AWS CLI para obter os dados de saída do stack de automação, popular variáveis de ambiente, e gerar o arquivo de configuração final necessário:
+3. Dentro do ambiente AWS Cloud9, usando o terminal embarcado, vamos configurar o AWS CLI v2 usando o IAM User `workshop-user` e a credencial de acesso criados para o workshop. E para isso, vamos usar do AWS CLI para obter os dados de saída do stack de automação, popular variáveis de ambiente, e gerar o arquivo de configuração final necessário:
 
 ```bash
 export WORKSHOP_CFN_STACK_NAME=$(aws cloudformation list-stacks --query 'StackSummaries[?StackStatus == `CREATE_COMPLETE` && contains(@.StackName, `mod`)].StackName' --output text)
@@ -49,7 +49,7 @@ Isso é tudo! Vamos começar a criar nosso ambiente do Amazon ECS com a CLI do A
 [**Próximo >**](./2-Build.md)
 
 <details>
-<summary style="font-size:14px">Opcional - Como instalar prerequisitos?</summary>
+<summary style="font-size:14px;font-weight:bold;">Opcional - Como instalar prerequisitos?</summary>
 <br/>
 
 Se você estiver disposto a executar as etapas em sua própria máquina, precisará executar todas as próximas etapas para garantir que tenhamos todas as ferramentas necessárias para os exercícios.

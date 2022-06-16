@@ -1,8 +1,8 @@
 # LATAM Containers Roadshow - Workshop de Amazon ECS
 
-[**< Back**](./2-Build.md)
+[**< Voltar**](./2-Build.md)
 
-## Capítulo 3 - Implantanto a Aplicação
+## Capítulo 3 - Implantando a Aplicação
 
 Dado que já temos nossos ambientes de infraestrutura no ar, vamos agora implantar os componentes da nossa aplicação `todo`. Essa aplicação é composta por dois componentes, `backend` e `frontend`. Os códigos fonte desses componentes estão disponíveis em `ecs/src`, e possuem seus respectivos `Dockerfiles` já construídos e armazenados nos mesmos diretórios.
 
@@ -37,7 +37,7 @@ Inserir este trecho, logo depois de `port: 10000`:
     start_period: 10s
 ```
 
-3. Esse componente de backend precisa de uma base de dados Amazon Dynamodb para desempenhar sua função. Vamos usar do AWS Copilot para configurar esse serviço adicional de forma integrada. Para isso, vamos executar:
+3. Esse componente de backend precisa de uma base de dados Amazon DynamoDB para desempenhar sua função. Vamos usar do AWS Copilot para configurar esse serviço adicional de forma integrada. Para isso, vamos executar:
 
 ```bash
 copilot storage init
@@ -93,8 +93,8 @@ copilot svc deploy --app todo --env development --name frontend
 
 ![Captura de tela com o resultado do comando 'copilot svc deploy'](../static/3.8-copilot_svc_deploy_frontend_dev.png)
 
-9. Diferente do serviço do tipo `Backend Service`, que não gera nenhum Elastic Load Balancer (ELB) para acesso externo, o do tipo `Load Balanced Web Service` cria um Application Load Balancer (ALB) que permite acesso externo. Podemos testar nossa aplicação `todo` no ambiente de desenvolvimento!
+9. Diferente do serviço do tipo `Backend Service`, que não gera nenhum Elastic Load Balancer (ELB) para acesso externo, o do tipo `Load Balanced Web Service` cria um Application Load Balancer (ALB) público. Podemos testar nossa aplicação `todo` no ambiente de desenvolvimento!
 
 ![Animação de tela acessando a aplicação em desenvolvimento](../static/3.9-frontend_demo.gif)
 
-[**Next >**](./4-Observe.md)
+[**Próximo >**](./4-Observe.md)
