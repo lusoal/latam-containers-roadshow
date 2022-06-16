@@ -60,7 +60,7 @@ Use as seguintes respostas:
 
 ![Captura de tela com o resultado do comando 'copilot env init'](../static/2.5-copilot_dev_env_init.png)
 
-7. Perceba que o AWS Copilot criou uma série de recursos, dentre eles uma Virtual Private Cloud (VPC), IAM Roles e o nosso cluster de Amazon ECS. O AWS Copilot usa o AWS Fargate como motor de execução serverless para os nossos containers (não há instâncias de Amazon EC2 a serem gerenciadas). Toda essa configuração de recursos se dá através do Amazon CloudFormation.
+7. Perceba que o AWS Copilot criou uma série de recursos, dentre eles uma Virtual Private Cloud (VPC), IAM Roles e o nosso cluster de Amazon ECS. O AWS Copilot usa o AWS Fargate como motor de execução serverless para os nossos containers (não há instâncias de Amazon EC2 a serem gerenciadas). Toda essa configuração de recursos se dá através do AWS CloudFormation.
 
 ![Imagem animada com as saídas do AWS CloudFormation](../static/2.6-stacks_cloudformation.gif)
 

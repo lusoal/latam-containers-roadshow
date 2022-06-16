@@ -4,7 +4,7 @@
 
 ## Capítulo 1 - Preparar o Ambiente de Trabalho
 
-Antes da gente começar a meter a mão na massa e explorar o Amazon Elastic Container Service (ECS), precisamos preparar o nosso ambiente de trabalho. Nesse workshop vamos usar o AWS Cloud9 para executar as atividades, que fornece um ambiente integrado de desenvolvimento para escrever, executar e depurar código usando apenas um navegador. Esse ambiente já foi provisionado através de uma automação feita pelo Amazon CloudFormation (código disponível em `helpers/cloudformation-cloud9-template.yaml`), um serviço de infraestrutura como código (IaC) que permite facilmente modelar, provisionar e gerenciar recursos da AWS.
+Antes da gente começar a meter a mão na massa e explorar o Amazon Elastic Container Service (ECS), precisamos preparar o nosso ambiente de trabalho. Nesse workshop vamos usar o AWS Cloud9 para executar as atividades, que fornece um ambiente integrado de desenvolvimento para escrever, executar e depurar código usando apenas um navegador. Esse ambiente já foi provisionado através de uma automação feita pelo AWS CloudFormation (código disponível em `helpers/cloudformation-cloud9-template.yaml`), um serviço de infraestrutura como código (IaC) que permite facilmente modelar, provisionar e gerenciar recursos da AWS.
 
 Entretanto, precisamos realizar uma pequena modificação que não foi possível automatizar:
 
