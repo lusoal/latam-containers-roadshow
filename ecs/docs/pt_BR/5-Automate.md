@@ -8,6 +8,10 @@ Nos capítulos anteriores aprendemos como usar o AWS Copilot para implantar e op
 
 Nesse capítulo vamos explorar como podemos implantar uma esteira de entrega contínua (Continuous Delivery), ou até implantação contínua (Continuous Deployment), mantendo a simplicidade operacional que vimos nos capítulos anteriores. Essa esteira vai ajudar a automatizar a entrega de mudanças no nosso ambiente de desenvolvimento e também no de produção.
 
+O nosso laboratório no final desse capítulo será como o diagrama a seguir:
+
+![Diagrama de arquitetura do laboratório no capítulo 5](../static/5-lab_architecture.png)
+
 1. No laboratório vamos seguir uma estrutura de monorepo, onde todos os componentes da aplicação (frontend e backend) são versionados no mesmo repositório de código, usando o AWS CodeCommit. Para isso, vamos criar nosso repositório:
 
 ```bash

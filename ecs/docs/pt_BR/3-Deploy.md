@@ -8,6 +8,10 @@ Dado que já temos nossos ambientes de infraestrutura no ar, vamos agora implant
 
 Assim como fizemos no capítulo anterior, vamos continuar explorando o AWS Copilot mas agora na implantação dos nossos `Services`, que representam nossas cargas de trabalho em execução e podem ser de vários tipos (Request-Driven Web Service, Load Balanced Web Service, Backend Service ou Worker Service), e de `Add-Ons`, que são serviços complementares que nossos componentes utilizam, como armazenamento ou banco de dados.
 
+O nosso laboratório no final desse capítulo será como o diagrama a seguir:
+
+![Diagrama de arquitetura do laboratório no capítulo 3](../static/3-lab_architecture.png)
+
 1. Vamos começar configurando o nosso `Service` para o componente de Backend, que vai ser do tipo `Backend Service`, e vai ser criado a partir da imagem de container disponível em `backend/Dockefile`. Vamos usar o comando interativo:
 
 ```bash

@@ -8,6 +8,10 @@ Agora que temos tudo o que precisamos em nosso ambiente de trabalho, neste capí
 
 Existem várias maneiras de provisionar infraestrutura na AWS, como usar o AWS CloudFormation, o AWS Cloud Development Kit (CDK) ou o Hashicorp Terraform. Nesse workshop vamos usar o AWS Copilot, que simplifica a criação e operação de aplicações conteinerizadas na AWS, incorporando as boas práticas para desenvolvimento de arquiteturas nativas de nuvem.
 
+O nosso laboratório no final desse capítulo será como o diagrama a seguir:
+
+![Diagrama de arquitetura do laboratório no capítulo 2](../static/2-lab_architecture.png)
+
 1. Vamos inicialmente clonar o repositório base do workshop para reaproveitar alguns dos artefatos e usar como espaço para inicialização do AWS Copilot.
 
 ```bash
