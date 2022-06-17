@@ -11,3 +11,4 @@ Usaremos o [AWS Copilot](https://github.com/aws/copilot-cli), para habilitar tim
 3. [Implantando a Aplicação](./3-Deploy.md)
 4. [Observando o Ambiente](./4-Observe.md)
 5. [Automatizando a Esteira](./5-Automate.md)
+6. [Limpando a Bagunça](./6-Cleanup.md)
