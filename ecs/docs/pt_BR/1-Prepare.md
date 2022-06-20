@@ -4,19 +4,19 @@
 
 ## Capítulo 1 - Preparar o Ambiente de Trabalho
 
-Antes da gente começar a meter a mão na massa e explorar o Amazon Elastic Container Service (ECS), precisamos preparar o nosso ambiente de trabalho. Nesse workshop vamos usar o AWS Cloud9 para executar as atividades, que fornece um ambiente integrado de desenvolvimento para escrever, executar e depurar código usando apenas um navegador. Esse ambiente já foi provisionado através de uma automação feita pelo AWS CloudFormation (código disponível em `helpers/cloudformation-cloud9-template.yaml`), um serviço de infraestrutura como código (IaC) que permite facilmente modelar, provisionar e gerenciar recursos da AWS.
+Antes de começarmos a meter a mão na massa, precisamos preparar o nosso ambiente de trabalho. Nesse workshop vamos usar o AWS Cloud9 para executar as atividades, que fornece um ambiente integrado de desenvolvimento para escrever, executar e depurar código usando apenas o navegador. Esse ambiente já foi provisionado através de uma automação de AWS CloudFormation (código disponível em `helpers/cloudformation-cloud9-template.yaml`), um serviço de infraestrutura como código (IaC) que permite facilmente modelar, provisionar e gerenciar recursos da AWS.
 
-Entretanto, precisamos realizar uma pequena modificação que não foi possível automatizar:
+Mesmo com a maior parte do ambiente já preparado, precisamos realizar pequenas modificações que não foram possíveis de automatizar:
 
 1. Seguindo os passos descritos inicialmente aqui no repositório, vamos acessar a console do serviço AWS Cloud9 e abrir o nosso ambiente chamado `latamcontainersroadshow`:
 
-![Imagem animada onde usamos a barra de busca para acessar diretamente a console do serviço AWS Cloud9](../static/1.1-access_c9_env.gif "1.1 - Acessando o ambiente do AWS Cloud9")
+![Imagem animada onde usamos a barra de busca para acessar diretamente a console do serviço AWS Cloud9](../static/1.1-access_c9_env.gif)
 
-2. Vamos garantir que não estamos usando credenciais temporárias do AWS Cloud9 para a execução das atividades pois elas são incompatíveis com o AWS Copilot e vão gerar problemas:
+2. Vamos garantir que não estamos usando credenciais temporárias do AWS Cloud9 para a execução das atividades pois elas são incompatíveis com alguns comandos do AWS Copilot, dado que a ferramenta foi pensada no fluxo de trabalho de uma pessoa desenvolvedora:
 
-![Imagem animada onde validamos se a funcionalidade de credenciais temporárias está desabilitada no AWS Cloud9](../static/1.2-disable_c9_temp_creds.gif "1.2 - Validando de Credenciais Temporárias estão desligadas")
+![Imagem animada onde validamos se a funcionalidade de credenciais temporárias está desabilitada no AWS Cloud9](../static/1.2-disable_c9_temp_creds.gif)
 
-3. Dentro do ambiente AWS Cloud9, usando o terminal embarcado, vamos configurar o AWS CLI v2 usando o IAM User `workshop-user` e a credencial de acesso criados para o workshop. E para isso, vamos usar do AWS CLI para obter os dados de saída do stack de automação, popular variáveis de ambiente, e gerar o arquivo de configuração final necessário:
+3. Dentro do ambiente AWS Cloud9, usando o terminal embarcado, vamos configurar o AWS CLI v2 usando o IAM User `workshop-user` e a credencial de acesso criados para o workshop (salvos como saídas no AWS CloudFormation). E para isso, vamos usar do AWS CLI para obter esses dados, popular variáveis de ambiente, e gerar o arquivo de configuração final:
 
 ```bash
 export WORKSHOP_CFN_STACK_NAME=$(aws cloudformation list-stacks --query 'StackSummaries[?StackStatus == `CREATE_COMPLETE` && contains(@.StackName, `mod`)].StackName' --output text)
@@ -42,7 +42,7 @@ EOF
 aws sts get-caller-identity
 ```
 
-![Imagem da saída do comando 'aws sts get-caller-identity'](../static/1.3-sts_identity_check.png "1.3 - Validando credencial usada com o AWS CLI v2 no Cloud9")
+![Imagem da saída do comando 'aws sts get-caller-identity'](../static/1.3-sts_identity_check.png)
 
 Isso é tudo! Vamos começar a criar nosso ambiente do Amazon ECS com a CLI do AWS Copilot.
 
