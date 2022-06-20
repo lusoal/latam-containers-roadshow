@@ -96,7 +96,7 @@ copilot svc show --app todo --name backend
 11. A partir desse momento, qualquer mudança no nosso repositório vai gerar um novo evento de execução no nosso pipeline e, consequentemente, uma mudança no nosso ambiente de desenvolvimento e, se aprovado, em produção. Vamos exercitar essa dinâmica alterando o arquivo `src/frontend/webapp/public/index.html` do frontend!
 
 ```html
-  <title>React Todo App (after pipeline)</title>
+  <title>React Todo App - v2</title>
 ```
 
 ![Animação de tela para aprovação manual do pipeline](../static/5.10-frontend_modification.gif)

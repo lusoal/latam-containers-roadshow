@@ -71,7 +71,7 @@ Use as seguintes respostas:
 8. Vamos repetir o processo para criar nosso ambiente produtivo. Poderíamos estar usando contas AWS diferentes, mas por conta da limitação dos laboratórios vamos ter ambos ambientes na mesma conta, mas em Virtual Private Clouds (VPCs) diferentes. Dessa vez vamos usar a opção `--default-config` para ele seguir com a opçào de infraestrutura padrão, e a opção `--prod` para sinalizar que esse será um ambiente de produção.
 
 ```bash
-copilot env init --app todo --name production --container-insights --default-config --prod
+copilot env init --app todo --name production --container-insights --default-config --prod --profile default
 ```
 
 ![Captura de tela com o resultado do segundo comando 'copilot env init'](../static/2.7-copilot_prod_env_init.png)

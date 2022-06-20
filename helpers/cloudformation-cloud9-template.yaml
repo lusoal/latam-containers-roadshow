@@ -315,7 +315,7 @@ Resources:
             - echo LC_ALL=en_US.UTF-8 >> /etc/environment
             - . /home/ec2-user/.bashrc
             - echo '=== UPDATE system packages and INSTALL dependencies ==='
-            - yum update -y; yum install -y vim git jq bash-completion moreutils gettext yum-utils perl-Digest-SHA
+            - yum update -y; yum install -y vim git jq bash-completion moreutils gettext yum-utils perl-Digest-SHA tree
             - echo '=== INSTALL AWS CLI v2 ==='
             - curl 'https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip' -o 'awscliv2.zip'
             - unzip awscliv2.zip -d /tmp

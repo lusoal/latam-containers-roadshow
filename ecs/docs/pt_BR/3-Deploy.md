@@ -26,7 +26,7 @@ Nas perguntas, respoda:
 
 ![Captura de tela com o resultado do comando 'copilot svc init'](../static/3.1-copilot_svc_init_backend.png)
 
-2. Vamos explorar o arquivo criado em `src/copilot/backend/manifest.yml`, olhar as opções de configuração que temos disponível, usando o editor de arquivos do AWS Cloud9. Vamos modificar esse arquivo para adicionar uma configuração de validação de saúde (health-check):
+2. Vamos explorar o arquivo criado em `src/copilot/backend/manifest.yml`, olhar as opções de configuração que temos disponível, usando o editor de arquivos do AWS Cloud9. Vamos modificar esse arquivo para adicionar uma configuração de validação de saúde (health-check) e dizer que gostaríamos de usar capacidade Spot:
 
 ![Imagem animada editando o arquivo de manifesto do serviço backend](../static/3.2-modify_backend_manifest.gif)
 
@@ -39,6 +39,13 @@ Inserir este trecho, logo depois de `port: 10000`:
     retries: 2
     timeout: 6s 
     start_period: 10s
+```
+
+E este trecho depois do `memory: 512`:
+
+```yaml
+count:
+  spot: 1
 ```
 
 3. Esse componente de backend precisa de uma base de dados Amazon DynamoDB para desempenhar sua função. Vamos usar do AWS Copilot para configurar esse serviço adicional de forma integrada. Para isso, vamos executar:
